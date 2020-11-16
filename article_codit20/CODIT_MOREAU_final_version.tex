@@ -1,0 +1,830 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if 
+                                                          % you want to use the \thanks command
+
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+
+%In case you encounter the following error:
+%Error 1010 The PDF file may be corrupt (unable to open PDF file) OR
+%Error 1000 An error occurred while parsing a contents stream. Unable to analyze the PDF file.
+%This is a known problem with pdfLaTeX conversion filter. The file cannot be opened with acrobat reader
+%Please use one of the alternatives below to circumvent this error by uncommenting one or the other
+%\pdfobjcompresslevel=0
+%\pdfminorversion=4
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+% The following packages can be found on http:\\www.ctan.org
+\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{epsfig} % for postscript graphics files
+\usepackage{mathptmx} % assumes new font selection scheme installed
+\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{xcolor}
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\title{\LARGE \bf
+A motion recognition algorithm using polytopic modeling
+}
+
+
+\author{Pierre Moreau$^{1}$, David Durand$^{1}$, J\'er\^ome Bosche$^{1}$ and Michel Lefranc$^{2}$% <-this % stops a space
+\thanks{*This work was supported by the company Elivie.}% <-this % stops a space
+\thanks{$^{1}$Pierre Moreau, David Durand and J\'er\^ome Bosche are with the Modeling, Information and Systems (MIS) Laboratory, University of Picardie Jules Verne, Amiens, France
+        {\tt\small pierre.moreau, david.durand, jerome.bosche\}@u-picardie.fr}}%
+\thanks{$^{2}$Michel Lefranc is with the neurosurgery department of
+University Hospital Center, Amiens-Picardie, France
+        {\tt\small Lefranc.Michel@chu-amiens.fr}}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% declarations for front matter
+\newcommand{\disp}{\displaystyle}
+\newcommand\A{\mbox{I\hspace{-.15em}A}}
+\newcommand{\hs}{\hspace*{\parindent}}
+\newcommand{\un}{\hs}
+\newcommand{\deux}{\un \un}
+\newcommand{\trois}{\un \deux}
+\newcommand{\quatre}{\deux \deux}
+\newcommand{\cinq}{\deux \trois}
+\newcommand{\six}{\trois \trois}
+\newcommand{\sept}{\trois \quatre}
+\newcommand{\huit}{\quatre \quatre}
+\newcommand{\maxli}{\max \limits _{i} \lambda_{i}}
+\newcommand{\real}{\mbox{\rule{0.3pt}{6.5pt}\hspace*{-0.5pt}R}}
+\newcommand{\compl}{\mbox{\hspace*{2pt}\rule{0.3pt}{6.5pt}\hspace*{-4pt}C}}
+\newcommand{\Idn}{{\bf I}_{n}}
+\newcommand{\maxim}{\max \limits}
+\newcommand{\gvs}{\vspace{7mm}}
+\newcommand{\pvs}{\vspace{3mm}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+\newcommand{\bt}{\begin{theorem}}
+\newcommand{\et}{\end{theorem}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\ren}{\begin{Remark}}
+\newcommand{\rem}{\end{Remark}}
+\newcommand{\bark}{\bar{k}}
+\newcommand{\sumk}{\displaystyle \sum_{k=1}^{\bar{k}}}
+\newcommand{\smi}{\underline{\sigma}}
+\newcommand{\sma}{\bar{\sigma}}
+\newcommand{\lmi}{\mathcal{LMI}}
+\newcommand{\glmi}{\mathcal{GLMI}}
+\newcommand{\emi}{\mathcal{EMI}}
+\newcommand{\eemi}{\mathcal{EEMI}}
+\newcommand{\bA}{{\bf A}}
+\newcommand{\bR}{{\bf R}}
+\newcommand{\bE}{{\bf E}}
+\newcommand{\bG}{{\bf G}}
+\newcommand{\bH}{{\bf H}}
+\newcommand{\bP}{{\bf P}}
+\newcommand{\bB}{{\bf B}}
+\newcommand{\bC}{{\bf C}}
+\newcommand{\bL}{{\bf L}}
+\newcommand{\bJ}{{\bf J}}
+\newcommand{\bU}{{\EuScript U}}
+\newcommand{\eH}{{\EuScript H}}
+\newcommand{\cA}{{\mathcal A}}
+\newcommand{\cB}{{\mathcal B}}
+\newcommand{\cC}{{\mathcal C}}
+\newcommand{\cE}{{\mathcal E}}
+\newcommand{\cJ}{{\mathcal J}}
+\newcommand{\cL}{{\mathcal L}}
+\newcommand{\cF}{{\mathcal F}}
+\newcommand{\cD}{{\mathcal D}}
+\newcommand{\cG}{{\mathcal G}}
+\newcommand{\cN}{{\mathcal N}}
+\newcommand{\mH}{{\mathbb H}}
+%\newcommand{\cH}{\boldsymbol{\mathcal H}}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cM}{{\mathcal M}}
+\newcommand{\cP}{{\mathcal P}}
+\newcommand{\cW}{{\mathcal W}}
+\newcommand{\cR}{{\mathcal R}}
+\newcommand{\cS}{{\mathcal S}}
+\newcommand{\cU}{{\mathcal U}}
+\newcommand{\cI}{{\mathcal I}}
+\newcommand{\cZ}{{\mathcal Z}}
+\newcommand{\cO}{{\mathcal O}}
+\newcommand{\cQ}{{\mathcal Q}}
+\newcommand{\mU}{{\mathbb U}}
+\newcommand{\mP}{{\mathbb P}}
+\newcommand{\mA}{{\mathbb A}}
+\newcommand{\mB}{{\mathbb B}}
+\newcommand{\mC}{{\mathbb C}}
+\newcommand{\mmI}{{\mathbb I}}
+\newcommand{\mJ}{{\mathbb J}}
+\newcommand{\mG}{{\mathbb G}}
+\newcommand{\mE}{{\mathbb E}}
+\newcommand{\mK}{{\mathbb K}}
+\newcommand{\mL}{{\mathbb L}}
+\newcommand{\mV}{{\mathbb V}}
+\newcommand{\mQ}{{\mathbb Q}}
+\newcommand{\mO}{{\mathbb O}}
+\newcommand{\mS}{{\mathbb S}}
+\newcommand{\mZ}{{\mathbb Z}}
+\newcommand{\mM}{{\mathbb M}}
+\newcommand{\mX}{{\mathbb X}}
+\newcommand{\mN}{{\mathbb N}}
+\renewcommand{\thefootnote}{\alph{footnote}}
+%\renewcommand{\QED}{\QEDopen} % IEEE
+\newcommand{\fintheor}{\hfill $\blacksquare$}
+\newcommand{\finlem}{\hfill $\diamondsuit$}
+\newcommand\indbar[2]{{\overline{#1}}_{#2}}
+\newcommand\indbart[2]{{\overline{#1}}_{#2}^T}
+\newcommand{\Hdeux}{$H_2$~}
+\newcommand\ind[2]{{#1}_{#2}}
+\newcommand\indt[2]{{#1}_{#2}^T}
+\newcommand\inde[3]{{#1}_{#2}^{#3}}
+\newcommand{\mgras}[1]{\mathbf {#1}}
+\newcommand\indchap[2]{{\hat{#1}}_{#2}}
+\newcommand\indchapt[2]{{\hat{#1}}_{#2}^T}
+\newcommand\indtild[2]{{\tilde{#1}}_{#2}}
+\newcommand\indtildt[2]{{\tilde{#1}}_{#2}^T}
+\newtheorem{thm}{Theorem}
+\newtheorem{definition}{Definition}
+%\newtheorem{hypo}{Assumption}
+%\newtheorem{lem}{Lemma}
+%\newtheorem{pf}{Proof}
+%\newtheorem{remark}{Remark}
+\newcommand{\mI}{{\mathbb I}}
+\newcommand{\mzO}{{\mathbb O}}
+\newcommand{\mR}{{\mathbb R}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+People's movements say a lot about their activities. Whether it concerns sports, music (playing an instrument), at work, in re-education, each domain has its own specific moves. However, some of it, such as sports competition, need high-precision movements. Tools are available permitting to measure movements in all sectors. First, sensors are placed on different strategic points on the person's body that allow us to retrieve temporal datas from the body of the user. In this work, no camera is used for motion recognition in order to let the user free to go in different spaces. A considerable number of algorithms help for movement recognition such as deep learning, convolutional neural networks or dynamic modelling, but in most cases, cameras are used. So, our approach consist of two phases. First, model the users thanks to whole-body sensors and save characteristic movements. Second, we still use sensors, to model the test person to find characteristic movements depending on the activity.
+
+
+
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+In the last decade, the recognition of movements has come a long way, mainly thanks to the evolution of deep learning. Most research uses cameras or depth cameras to analyze movements, and use image recognition algorithms. In \cite{nev16}, two algorithms are used: a neuronal network to identify hand movements and a convolutional neural network to analyse body movements. A related project aims to operate hand gestures and uses it on identification print service for phones. They use algorithms to find differences in movement between each user. Another work \cite{ber15} uses a siamese neural network for gesture recognition. First, the data is retrieved by sensors such as accelerometers and gyrometers in smartphones, then, gestures and actions are recognized with siamese neural network based functions which reject uncertain and parasitic decisions. In \cite{dev14}, depth-cameras are used to capture the joints of the person in front of the camera. The depth added to the classic RGB camera allows to differentiate the person from the background and to distinguish if an object is handled by the person. So, skeleton and depth map approach are used for, respectively, body movement recognition (action) and object interactivity recognition (activities). Each joint is delivered by its 3D coordinates (x, y, z) and transformed in shape. Finally, k-nearest neighbors are employed to classify all shapes. At the end, a movement is a position sequence and each person's position may be viewed like an image. Google created GoogLeNet, a neural network architecture codenamed Inception \cite{sze14} to compete in the ImageNet Large-Scale Visual Recognition Challenge and its goal is to do image recognition as quickly as possible. This algorithm is based on convolutional neural network and is an estate of function such as "max pooling" which reduces the image by keeping most important data, convolution matrix and filter. This neural network contains a total of twenty-two layers. This network is built with an optimal local construction and repeated several times. At the end, each local function analyses the correlation statistics of the last layer and clusters them, then this is repeated with the next layer. The main problem of action recognition is to know when the movement starts and when its stops. In \cite{kop19}, authors propose to use convolutional neural networks for challenging this issue by using a sliding window approach. This model is composed of two parts : one to detect if there is a movement in the sliding window and one to detect which category the movement belongs to. The detector uses weighted-cross entropy loss to avoid false positives and the classifier is based on a stochastic gradient descent. Finally, they add a Single-time Activation function in order to have smaller reaction time and have one time recognition.\\
+Initially, the idea of this project comes from the will to help neurosurgeons to diagnose Parkinson's disease. Indeed, \cite{li18} analyses the effect of levodopa on patients suffering from Parkinson's disease. This medicine is effective, but gives rise to motor complications (dyskinesia) and the treatment must be regularly modified. For the purpose of recovering data, movement trajectories were extracted from a video and poses are estimated with a deep learning algorithm. Finally, a random forest analyses the severity of levodopa-induced dyskinesia. Other work \cite{kei03} retrieves data from a triaxial accelerometer arranged at six different locations on the body. This data is labelled by physicians off-line so that it can be used to train a neural network.\\
+The e-moove's project aims at assisting people in many different sectors. That's why we present this paper as follows. Section II presents the context of the e-mOove project. In Section III, we present main results and also algorithms. Finally, section IV illustrates the results and the database of Florence University that we use to test our algorithms.
+
+
+\section{CONTEXT}
+
+\subsection{The e-moove project}
+
+Various techniques exist to capture these movements such as photography, sensors or cameras. In the e-mOove project, only wearable sensors (gyrometers, accelerometers and magnetometers) are used. Placed in a suit, this allows to model users in order to identify characteristic movements. The main advantage is to use this unobtrusive suit in real conditions. Moreover, users can wear it for some days before retrieved data from sensors. Recovered data are treated off-line with algorithms, such as deep learning, convolutional neural network or dynamic modelling. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=9cm]{pierre1}
+		\caption{Presentation of our approach} 
+		\label{fig:silhou}
+	\end{center}
+\end{figure}
+Sensors are used to get data from the user's body and these data are treated with algorithms in order to extract characteristic movements of an activity.\\
+Whatever the algorithms, data must be labeled to identify the movement by comparing them. One of the main applications is the diagnosis of Parkinson's disease. This neurodegenerative disease implies problems of posture disorders such as tremors, trampling, falling or almost falling ... In this way, automatic detection of these characteristic movements, based on algorithms, would be must useful in helping the hospital practitioner to establish an accurate diagnosis. These algorithms must be trained on data from the same activity or disease, to find characteristic movements according associated with a type of Parkinson's. 
+They can also be used in the field of sport, education, orthopedics, music...\\
+Currently, data from the combination has not been retrieved yet. Many patients must wear the sensor's suit to create data and it takes time. Fortunately, the University of Florence \cite{sei13} creates a database of different movements. That allow us to perform our algorithm as a first step even if it's not our prediction domain. Then, we will be able to train algorithms on our database from patients having Parkinson's disease.\\
+%
+%\begin{figure}[h]
+%	\begin{center}
+%		\includegraphics[width=8cm]{pierre2}
+%		\caption{Tool base and specific modules} 
+%		\label{fig:silhou}
+%	\end{center}
+%\end{figure}
+%
+%Finally, the sports coach or the doctors will get back a video containing all the movements that the user has made. All characteristic movements will be marked on the video progress bar to see directly the movements of interest.
+%
+
+
+\subsection{The experimental context}
+
+As mentioned above, one of the originality - and constraint - of our approach consists in motion capture, only from sensors such as gyrometers or accelerometers. No image data from any camera is considered. In this work, it is assumed that the person is dressed with a special suit, equipped with several sensors, located on different parts of the human body. For example, a fifteen sensors combination is illustrated in Figure \ref{fig:silhounew22}.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=7cm]{silhou_new}
+		\caption{15 sensors connected jumpsuit} 
+		\label{fig:silhounew22}
+	\end{center}
+\end{figure}
+
+Each sensor allows the translation movement of the corresponding joint to be measured in 3D space: longitudinal movement ($z$), lateral movement ($x$) and vertical movement ($y$). According to this figure, the left wrist sensor will deliver $3$ signals, denoted $f_{25}$, $f_{26}$ and $f_{27}$ corresponding to the wrist movement, respectively along the $x$, $y$ and $z$ axis. For the specific "wave gesture" corresponding to the left arm lifting, $f_{25}$, $f_{26}$ and $f_{27}$ signals are shown in Figure \ref{fig:wave}.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=7cm]{mvt1.jpg}
+		\caption{World coordinates of the left wrist: \textit{wave gesture}} 
+		\label{fig:wave}
+	\end{center}
+\end{figure}
+
+From a database containing the measurements delivered by a number $s$ of sensors for a set of $m$ movements, the objective of this work is to propose an algorithm detecting a movement among $m$.\\
+\textcolor{red}{In general, the more data the device generates, the more precise the detection. On the other hand, the number of considered signals for the detection step has a direct impact on the computation time of the algorithm. This can be problematic in the case of real-time detection. Also, depending on the nature of the problem, a pre-analysis could consist in identifying and quantifying the relevant sensors for detection.}
+For experimentation purpose, we use off-the-shelf dataset before grabbing data from the equipped suit. 
+
+\section{Motion detection by polytopic modeling}
+
+
+\textcolor{red}{In the literature, most motion recognition techniques use vision systems, such as cameras. Movements from video signals can then be represented in the form of curves and surfaces in a non-Euclidean multi-dimensional space. In this way, Riemannian manifolds have aroused great interest in recent years \cite{bia12,liu13}. In the context of the e-moove project, no vision system is used, only gyroscope and accelerometer type sensors. Also polytopic modeling is preferred to manifold representations.}\\
+In this work, it is assumed that a number $s$ of sensors allow the measurement of translation movements in 3D space. This means that $n=3s$ time signals are delivered by the combination and must be used to characterize a particular movement. So, over a given acquisition period $T_a=\bar{k}T$ ($T$ is the sampling period), the $n$ functions $f_i$ can be assimilated  by a "standard" data vector representation, as shown Figure \ref{fig:datare}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=8cm]{patient_rep.jpg}
+		\caption{Vector representation : experience $p$ with $n$ signals and $\bar{k}$ samples} 
+		\label{fig:datare}
+	\end{center}
+\end{figure}
+
+\subsection{A discret state-space representation for learning}
+
+Let us consider the vector $ X_k \in \mR^{n \times 1} $ concanetating the $n$ signals $f_j^{(p)}$ of the $k^{th}$ period. The discret state-space model of the movement system associated with the experience $p$ is defined by (\ref{eq1})
+
+\begin{equation}
+\label{eq1}
+X_{k+1}^{(p)}\,=\,
+\left[ \begin{array}{l}
+f_{1_{k+1}}^{(p)}\\
+\vdots\\
+f_{j_{k+1}}^{(p)}\\
+\vdots\\
+f_{n_{k+1}}^{(p)}\\
+\end{array} \right]\,=\,
+A^{(p)} \, X_k^{(p)}\,=\,
+A^{(p)} \,
+\left[ \begin{array}{l}
+f_{1_{k}}^{(p)}\\
+\vdots\\
+f_{j_{k}}^{(p)}\\
+\vdots\\
+f_{n_{k}}^{(p)}\\
+\end{array} \right].
+\end{equation}
+
+where $A\in \mR^{n \times n}$ is the state-space matrix of the discrete autonomous system $\textit{S}^{(p)}$. Of course, this system is highly nonlinear and it is impossible to model its dynamics over all of the $\bar{k}$ periods by a single state matrix $A$. So, one solution consists in proceeding by a "packet modeling". The idea is to develop a static model for a reduced number $\gamma<\bar{k}$ of periods belonging to a time window. This time window is called a sliding window (\textit{sw}) insofar as it is offset by a period $T$ in order to generate the static state matrix $A_k$, modeling the dynamics of the window $sw_{k+1}$ as a function of the window $sw_{k}$. This modeling process is illustrated in the figure \ref{sw}.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=8cm]{patient_rep_22.jpg}
+		\caption{The Sliding Window Modeling process} 
+		\label{sw}
+	\end{center}
+\end{figure}
+
+Figure \ref{sw} considers a number $\gamma=5$ of periods for the sliding window. \textcolor{red}{$\gamma$ results from a compromise in the precision of the model obtained from the $n$ signals and the computation time necessary to generate it}. Thus, $x_{1}^{(p)}$ corresponds to the concanenation of the measurements of the signals $f_j^{(p)} \, \forall \, j\in \{1,..,n\}$ during the period $sw_1$, $x_{2}^{(p)}$ during the period $sw_2$, $x_{k}^{(p)}$ during the period $sw_k$,... Finally, it comes:
+
+\begin{equation}
+\label{eq:sssw1}
+x_{k+1}^{(p)}=A_k^{(p)}x_{k}^{(p)}\quad \forall \, k\in \{1,..,\bar{k}-\gamma+1\}
+\end{equation}
+
+For each period $k$, a linear system of the form (\ref{eql}) must be solved. 
+
+\begin{equation}
+		\label{eql}
+		M_k\,y_k\,=\,x_{k+1}^{(p)}
+		 \end{equation}
+		 
+		 with 
+		 
+		 $y_k \in \mR^{n^1 \times 1}$ is the unknown vector containing all the elements of $A_k^{(p)}$ whereas $M_k$ is expressed as (\ref{Mi})
+		 
+		 \begin{equation}
+		\label{Mi}
+		M_k^T\,=\,\mI_n \otimes x_{k}^{(p)}
+		 \end{equation}
+		 
+where $\mI_n$ is the identity matrix of order $n$ and $\otimes$ the product of Kronecker. It means that $M_k$ is a hollow matrix and the solution vector $y_k$ is computed from the expression  (\ref{yi}) 
+		 
+\begin{equation}
+		\label{yi}
+		y_k\,=\,y_0\,+\,M_k^\perp \times \omega
+		 \end{equation}		 
+
+where $y_0$ is a particular solution of system (\ref{eql}), $M_k^\perp$ is the kernel of $M_k$ and $\omega$ is a vector of appropriate dimension whose values are generated randomly.
+
+Under these conditions, each matrix $A_k^{(p)}$ can be considered as a time signature of the corresponding movement. In conclusion, the learning phase consists in generating $\bar{k}-\gamma+1$ matrices $A_k^{(p)}$, and this, for each experiment $p$ associated with a movement, $ \forall p\in \{1,..,N\}$, .
+
+\subsection{A polytopic representation for detection}
+
+Polytopic modeling is widely used to model complex systems \cite{ber89}. It is obtained in a fairly conventional way by linearizing the nonlinear system around a number of more or less important equilibrium points so as to provide a satisfactory approximation of the nonlinear behavior of the system. In the case of motion capture systems considering time signals (as is the case in this work), this type of modeling trends to to be very interesting.
+
+Now, we wish to detect, in real time if possible even if we plan to do post-treatment, the movement carried out by an individual $\lambda$ equipped with the same combination mentioned in section \textit{II-B}. Consider that the learning phase presented in the previous section consist of $N$ experiences. The goal is to express, for each acquisition period $k$, the dynamics of the $n$ signals $f_j^{(\lambda)}$ as a function of the models associated with state-matrices $A_k^{(p)}$, generated during the learning phase. More precisely, it is question to generate matrices  $\mA_k^{(\lambda)}$ such as:
+
+\begin{equation}
+\label{eq:sssw2}
+x_{k+1}^{(\lambda)}=\mA_k^{(\lambda)}x_{k}^{(\lambda)}\quad \forall \, k\in \{1,..,\bar{k}-\gamma+1\}
+\end{equation}
+
+where $\mA_k^{(\lambda)}=A_k^{(\lambda)}(\theta^{(\lambda)})$ is a non linear matrix that represents a LPV model considering the polytope $\textbf{A}_k^{(\lambda)}$ defined by
+		 
+		 \begin{equation}
+		\label{eq:M1}
+		\begin{array}{l}
+		\textbf{A}_k^{(\lambda)}=\left\{ A_k^{(\lambda)}(\theta^{(\lambda)})=
+		 \displaystyle \sum_{p=1}^{N}  \theta_p^{(\lambda)}A_k^{(p)} \,;\, \theta^{(\lambda)} \in\Theta^{(\lambda)} \right\}
+		 \end{array}
+		 \end{equation}
+		
+		and where $\Theta^{(\lambda)}$ is the set of the barycentric coordinates:
+		
+		\begin{equation}
+		\label{eq:Xi1}
+		\Theta^{(\lambda)}=\left\{ \theta^{(\lambda)} = \left[ \begin{array}{c} \theta_{1}^{(\lambda)}\\.\\.\\ \theta_{N^{(\lambda)}} \end{array} \right]
+		\in \{\mR^+\}^{N}\,| \disp \sum_{p=1}^{N}\theta_p^{(\lambda)} = 1 \,\right\}
+		 \end{equation}
+		 
+It is important to note that the state representation allows to express the dynamics of each signal $f_j^{(\lambda)}$ as a function of all signals. In other words, signals are not modeled separately and the model of the global system results in a single matrix, denoted by $\mA_k^{(\lambda)}$.\\
+
+According to the complexity of the system (number $N$ of experiments, number $\gamma$ of periods for the sliding window, ...), solving the system of equations (\ref{eq:sssw2}) with (\ref{eq:M1}) and (\ref{eq:Xi1}) is not so trivial. This is actually an optimization problem defined by:
+
+\begin{equation}
+		\label{eq:opti}
+		inf \,\, \{f(\theta_p^{(\lambda)})\,|\, \disp \sum_{p=1}^{N}\theta_p^{(\lambda)} = 1\}
+		 \end{equation}
+
+with 
+
+\begin{equation}
+		\label{eq:opti2}
+		f(\theta_p^{(\lambda)})\,=\,\left( x_{k+1}^{(\lambda)}-\mA_k^{(\lambda)}x_{k}^{(\lambda)} \right)^T\left( x_{k+1}^{(\lambda)}-\mA_k^{(\lambda)}x_{k}^{(\lambda)} \right)
+		 \end{equation}
+
+In this work, 'interior-point' algorithm will be used to solve the problem (\ref{eq:opti}).\\
+
+Finally, in the hypothesis of a satisfactory solution $\theta^{{(\lambda)}^\star}$ for the optimization problem (\ref{eq:opti}), the values of $\theta_p^{(\lambda)^\star}$ can be considered as resemblance coefficients of the corresponding experiments of the learning phase. Each experience being associated with one of the movements $m$ to be detected, it is then easy to compute the coefficient of resemblance linking the current experiment with the knowledge models.\\
+
+Considering $\theta^{{(\lambda_1)}^\star}$ the $N_1$ coefficients of the vector $\theta^{{(\lambda)}^\star}$  associated with movement $1$, $\theta^{{(\lambda_2)}^\star}$ those associated with movement $2$, $\theta^{{(\lambda_m)}^\star}$ those associated with movement $m$... In this way, it is possible to compute $\phi_{mk}^{(\lambda)}$ the coefficient of resemblance of the current experiment with the movement $m$ during the period $k$ such as:
+
+\begin{equation}
+		\label{eq:phires}
+		\phi_{mk}^{(\lambda)}\,=\,\displaystyle \sum_{i=1}^{N_m}\theta_i^{{(\lambda_1)}^\star}
+		 \end{equation}
+
+
+
+\section{Experimental results}
+
+
+\subsection{Florence 3D Action dataset}
+
+The diagnostic method presented in this paper was evaluated on the dataset collected at the University of Florence during 2012 and captured using a Kinect camera \cite{sei13}. The recognition system relies on a skeletal based representation of the human body which can be compared to the connected jumpsuit considered in the \textit{e-moove} project, illustrated on figure 2. \textcolor{red}{The Kinect device's RGB-D data stream provides a wired skeleton at a speed of 30 frames per second, generating a skeleton joint acquisition frequency of 30 Hz. To reduce the effect of noise that may affect the coordinates of skeleton joints, a smoothing filter is applied to each
+sequence.} The skeleton joints considered by the authors of \cite{sei13} are the same $15$ as those considered in section \textit{II-B}. In this work, we just used the Cartesian coordinates of the $15$ joints in Cartesian coordinates and, consequently, $45$ signals $f_j$ ($3$ signals per joint). \textcolor{red}{In this work, the authors' contribution does not come at all from the hardware part used for data collection. This hardware part generates recurring problems such as measurement noise, sensor sensitivity  (...) which are solely the work \cite{sei13} and not at all presented in this article.}
+The Florence 3D Action Dataset includes $9$ activities: 1-wave, 2-drink from a bottle, 3-answer phone, 4-clap, 5-tight lace, 6-sit down, 7-stand up, 8-read watch, 9-bow. During acquisition, $10$ subjects were asked to perform these actions. This resulted in a total of $215$ activity samples. The objective is of course to propose an algorithm for the recognition of actions included in the dataset. In \cite{sei13}, a Naive-Bayes Nearest-Neighbor (NBNN) classifier is applied for action recognition. More precisely, 4 variants of this algorithm are presented (NBNN, NBNN+parts, NBNN+time and NBNN+parts+time) and then compared to other approaches in the literature.\\
+
+
+%
+%The learning phase was carried out using physiological data ($HR$, $DBP$, $SDP$ and $FO2$) from 7000 patients, measured every hour, for a period of 48 hours. From this learning phase, the obtained polytopic models and their corresponding eigenvalues, $10$ regions $\cD_k$ were considered. The characteristics of these regions depend on the global spectrum obtained for each physiological variable. The choice was made to consider only rings as $\lmi$ regions. These rings are all centered on the origin $\cO$ of the complex plane with $r_1$ as inner radii and $r_2$ as outer radii. In the following table, the characteristics of the different rings are given for each physiological quantity such as $\cD_i\Leftrightarrow (r_1,r_2)$.
+%
+%\begin{table}
+%\centering
+%\begin{tabular}{cllll}  
+%\hline
+%$(r_1,r_2)$  &  $HR$ & $DPB$ & $SDP$ & $FO2$ \\
+%\hline
+%$\cD_1$       &  $(0,0.1)$   & $(0,0.1)$  &  $(0,0.9)$  &  $(0,0.0007)$   \\
+%$\cD_2$       &     $(0.1,0.5)$  & $(0.1,0.7)$  & $(0.9,4.5)$  & $(0.0007,0.003)$  \\
+%$\cD_3$       &    $(0.5,1)$ &  $(0.7,1.4)$ &   $(4.5,9)$ &  $(0.003,0.006)$   \\
+%$\cD_4$        &     $(1,2)$  & $(1.4,2.9)$  &  $(9,18)$ &  $(0.003,0.013)$ \\
+%$\cD_5$       &      $(2,5)$ &  $(2.9,7.3)$  & $(18,45)$  & $(0.013,0.032)$ \\
+%$\cD_6$        &      $(5,10)$ &  $(7.3,14)$ &  $(45,90)$ &  $(0.032,0.065)$  \\
+%$\cD_7$       &     $(10,50)$  &  $(14,72)$ &  $(90,449)$ &  $(0.065,0.328)$  \\
+%$\cD_8$       &      $(50,97)$  &  $(72,146)$  &  $(449,897)$ &  $(0.32,0.65)$ \\
+%$\cD_9$       &      $(97,485)$ &   $(146,728)$ &  $(897,4487)$  & $(0.65,3.28)$\\
+%$\cD_{10}$        &      $(485,+\infty)$  &  $(728,+\infty)$ &  $(4487,+\infty)$  &  $(3.28,+\infty)$\\
+%\hline
+%\end{tabular}
+%\caption{Characteristics of $\lmi$ regions}
+%\label{tab:regk}
+%\end{table}
+%
+%The ratio $\rho_k$ defined in (\ref{eq:ratio}) is computed for each region and for each variable. The results are summarized in the table \ref{tab:rhok}.
+%
+%\begin{table}
+%\centering
+%\begin{tabular}{ccccc}  
+%\hline
+%$\rho_k(\%)$  &  $HR$ & $DPB$ & $SDP$ & $FO2$ \\
+%\hline
+%$\cD_1$       &  25.9523   & 7.0008  &  3.7690  &  2.2327   \\
+%$\cD_2$       &     32.3637  & 25.2664  & 11.2181  & 13.6801  \\
+%$\cD_3$       &    22.8474 &  30.7059 &   7.6920 &  16.3417   \\
+%$\cD_4$        &     17.3534  & 30.6326  &  7.1314 &  16.9411 \\
+%$\cD_5$       &      17.8446 &  27.6154  & 15.0128  & 25.4343 \\
+%$\cD_6$        &      14.0493 &  28.0683 &  11.1834 &  33.1100  \\
+%$\cD_7$       &     23.9498  &  8.5875 &  17.4565 &  35.5513  \\
+%$\cD_8$       &      5.4795  &  8.1009  &  8.7807 &  34.2021 \\
+%$\cD_9$       &      29.7141 &   2.8205 &  20.3992  & 18.9594\\
+%$\cD_{10}$        &      30.0223  &  9.2928 &  33.8902  &  2.3617\\
+%\hline
+%\end{tabular}
+%\caption{Criticality rate $\rho_k$ obtained for each region}
+%\label{tab:rhok}
+%\end{table}
+%
+%According to the learning stage, the diagnostic approach was tested from the remaining 731 patients. 
+%
+%
+%\section{A diagnostic technique by root-clustering approach}
+%
+%In this section, a link is established between the eigenvalues location of a polytope and the criticality of the corresponding patient's state of health. More precisely, we wish to establish a criticality score for each physiological quantity and for each measurement (ie each hour). The interest is to associate the state of criticality with one or more physiological quantities rather than the others.
+
+\subsection{Data pre-processing phase}
+
+The acquisition period of the activities carried out as part of this experience is not identical. Consequently, the number of measurement points obtained during this acquisition is also different from one activity to another. However, the learning phase of the proposed approach consists of a discret-time state-space modeling phase, obtained from data vectors of the same dimension. Consequently, a linear interpolation is carried out for each signal $f_j^{(p)}$, $\forall \{n,p \} \in \{(1,..,27) \times (1,..,N) \}$. This interpolation does not change the dynamics of the signal since it is performed as a function of the corresponding acquisition time vector. It finally follows that the dimension of each vector is such that $f_j^{(p)}\in \mR^{1 \times 34}$, which corresponds to the largest size of the function $f_j^{(p)}$ contained in the database.\\
+Then, it is important to indicate that some of the actions considered for this test can either be performed by left or right limbs (arms or legs). For example, the "wave action" can either be associated with a raising of the left arm or with a raising of the right arm.
+
+
+\begin{algorithm}[h]
+\caption{Data pre-processing algorithm}
+\label{alg:algorithm}
+\textbf{Input}: Original signals $g^{(p)}=\left[ g_k^{(p)}\right]$ for $k\in \{1,..,45\}$\\
+\textbf{Output}: Processed signals $f^{(p)}=\left[ f_j^{(p)}\right]$ for $j\in \{1,..,27\}$\\
+\begin{algorithmic}[1] %[1] enables line numbers
+\STATE Let $j=1$.
+\WHILE{$j\leq 27$}
+\IF {$i \leq 9$}
+\STATE $f_j^{(p)}\,=\,g_j^{(p)}$.
+\ELSE [\textbf{if} $j \leq 18$]
+\STATE $f_j^{(p)}\,=\,sup(g_j^{(p)}\,+\,g_{j+9}^{(p)})$
+\ELSE
+\STATE $f_j^{(p)}\,=\,sup(g_{j+9}^{(p)}\,+\,g_{j+18}^{(p)})$
+\ENDIF
+\STATE $j=j+1$.
+\ENDWHILE
+\STATE \textbf{return} $f^{(p)}$
+\end{algorithmic}
+\end{algorithm}
+
+This amounts to considering the $9$ sensors connected jumpsuit illustrated in the figure.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=6cm]{silhou2}
+		\caption{9 sensors connected jumpsuit} 
+		\label{fig:silhou}
+	\end{center}
+\end{figure}
+
+\subsection{Learning stage}
+
+The discret-time state-space modeling method presented in section III-A is now applied for the learning phase. The size of the considered sliding window is $\lambda=5$ periods. This learning stage consist in generating $29$ state-matrices $A_k^{(p)} \in \mR^{27 \times 27}$ per activity $p$, $p\in\{1,..,215\}$.\\
+
+Note that the resolution of the system (\ref{eql}) does not cause any difficulty since it is under-determined. The computations was performed with \textsc{Matlab} R2017a on a Mac OS X system, processor 2.8 Ghz Intel Core i5. The computation time required to generate the $29 \times 215$ matrices is $17836\,s$, or almost $5$ hours.\\
+In the following, some of the $215$ activities are considered. For these $12$ activities, a signal $f_j$ (solid line) as well as the response of the corresponding obtained model (tilled point) are plotted.
+
+\begin{figure}[H]
+	
+		%\begin{flushleft}
+		\hspace{-0.6cm}\includegraphics[width=10cm]{validmodel.jpg}
+		\caption{State-space model validation - I} 
+		\label{fig:validmodel1}
+		%\end{flushleft}
+	
+\end{figure}
+
+
+We can see from Figures \ref{fig:validmodel1}, \ref{fig:validmodel2} and \ref{fig:validmodel3} that all signals are near estimated values. These simulation results show the effectiveness of the control law presented in this paper.
+\begin{figure}[h]
+	
+		%\begin{flushleft}
+		\hspace{-0.3cm}\includegraphics[width=10cm]{validmodel2.jpg}
+		\caption{State-space model validation - II} 
+		\label{fig:validmodel2}
+		%\end{flushleft}
+	
+\end{figure}
+
+
+\begin{figure}[h]
+	
+		%\begin{flushleft}
+		\hspace{-0.3cm}\includegraphics[width=10cm]{validmodel3.jpg}
+		\caption{State-space model validation - III} 
+		\label{fig:validmodel3}
+		%\end{flushleft}
+	
+\end{figure}
+
+This comparison shows the efficiency of the modeling method and validates all the state-space models generated during the learning phase.
+
+\subsection{Detection stage}
+
+The authors of \cite{sei13} suggest a leave-one-actor-out protocol: train your classifier using all the sequences from $9$ out of $10$ actors and test on the remaining $1$. This validation case is denoted \textbf{out-1} in the sense that actor $1$ is out of the protocol for the classifier. Repeat this procedure for all actors (\textbf{out-2} to \textbf{out-10}) and average the $10$ classification accuracy values. In this work, the same protocol is considered. In a general way, the validation test considering activities carried out by actor $\alpha$ and the other activities for the learning part, is denoted $T_\alpha$. According to this, the following procedure is considered for this test step and repeated for all $T_\alpha$, $\alpha \in\{1,..,10\}$.\\ 
+
+
+\begin{description}
+
+\item \textbf{Step 1} : Remove from the knowledge models bank resulting from the learning phase, the state-space matrices modeling the dynamics of the $\bar{N}=215-N$ activities of the actor $\lambda$. Then, for each activity $\lambda$, $\forall \,\lambda \in \{1,..,\bar{N} \}$, specific to the actor $\lambda$, initialize the variable $\tau$ to zero and repeat \textbf{Step 2} to \textbf{Step 5}.\\
+
+\item \textbf{Step 2} : For each period $k$, $\forall \,k \in \{1,..,34 \}$, repeat \textbf{Step 2-a} and \textbf{Step 2-b} :\\
+
+\item \textit{Step 2-a} :  Solve the optimization problem defined by (\ref{eq:opti}) and (\ref{eq:opti2}) and generate the corresponding $34$ vectors $\theta^{(\lambda)}$ defined by (\ref{eq:Xi1}).\\
+
+\item \textit{Step 2-b} : Compute $\phi_{mk}^{(\lambda)}$ defined in (\ref{eq:phires}).\\
+
+\item \textbf{Step 3} : Generate matrix $\phi^{(\lambda)} \in \mR^{9 \times 34}$ resulting from the concatenation of the coefficients $\phi_{mk}^{(\lambda)}$ and compute $\Upsilon^{(\lambda)}\in \mR^{9 \times 1}$, the column vector corresponding to the mean values of the $9$ rows of the $\phi^{(\lambda)}$.\\
+
+\item \textbf{Step 4} : Extract the largest value $\Upsilon_{m^\star}^{(\lambda)}$ from $\Upsilon^{(\lambda)}$ as well as the number $m^\star$ of the associated line. ${m^\star}$ corresponds to the movement detected by the algorithm whereas $\Upsilon_{m^\star}^{(\lambda)}$ is the global pronosis.\\
+
+\item \textbf{Step 5} : Consider $m$ the movement actually performed by the actor, if $m^\star=m$, then $\tau = \tau + 1$.\\
+
+\item \textbf{Step 6} : For each $T_\alpha$, the score associated with the effectiveness of our approach is computed such as:
+
+\begin{equation}
+\label{eq:glo}
+\rho_\alpha\,=\, \frac{\tau}{\bar{N}}
+\end{equation}
+
+and finally, the final score is defined as in (\ref{eq:glo2})
+
+\begin{equation}
+\label{eq:glo2}
+\rho \,=\, \displaystyle \frac{1}{10}\sum_{\alpha =1}^{10} \rho_\alpha
+\end{equation}
+\end{description}
+
+In order to illustrate this process, the case \textbf{out-3} is now considered. The activities associated with this actor are those numbered from $48$ to $68$. This means that the learning phase is carried out from activities $1$ to $47$ and $69$ to $215$, and the test is carried out on the $\bar{N}=21$ activities $48$ to $68$.\\
+First, consider the specific case of activity $58$ during which actor $3$ performed movement $5$. The lines $4$, $5$ and $6$ of $\phi_{mk}^{(58)}$ corresponding to the 3 highest similarity coefficients for this test (for clarity, the 6 others have been removed from the graph) are plotted in Fig. \ref{fig:validmodel4} for the $34$ periods. In this case, our algorithm is rather very efficient since it detects, for most periods, the right movement with a high similarity coefficient. In the end, only the average values of the $9$ lines of $\phi_{mk}^{(58)}$ (one per movement) are kept and then compared. The different values are presented in Tab. \ref{table1} and we can note that the average value selected by the algorithm (the largest) is largely associated with the movement performed.
+
+\begin{table}[h]
+\caption{Recognition accuracy case \textbf{out-3}, activity 58}
+\label{table1}
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|}
+\hline
+$m$ (mvt) & 1 & 2 & 3 & 4 & \textbf{5} & 6 & 7 & 8 & 9\\
+\hline
+$\phi_{mk}$ (\%) & 0.9 &    1.6 &  1.5 &  4.8 &    \textbf{68.4} &     14.3 &    4.1 &     0.9 &   3.5\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[h]
+	
+		%\begin{flushleft}
+		\hspace{-0.3cm}\includegraphics[width=9cm]{valid_test_1.jpg}
+		\caption{Right dedection: case \textbf{out-3}, activity 58} 
+		\label{fig:validmodel4}
+		%\end{flushleft}
+	
+\end{figure}
+
+Now, consider the specific case of activity $67$ during which actor $3$ performed movement $9$. The same type of plot is proposed in Fig. \ref{fig:validmodel5} with the $2$, $3$ and $9$ of $\phi_{mk}^{(58)}$, with the corresponding Tab. \ref{table2}. In this case, the coefficient remained by the algorithm is $\bar{\phi}=\phi_{3k}^{(58)}=30.1$ which is associated with movement 3 whereas the movement carried out by the actor is 9. There is therefore a confusion of the algorithm between these two movements which are however very different . Also, this "false detection" could be due to the resolution of the optimization problem.
+
+
+\begin{figure}[h]
+	
+		%\begin{flushleft}
+		\hspace{-0.3cm}\includegraphics[width=9cm]{valid_test_2.jpg}
+		\caption{False detection: case \textbf{out-3}, activity 67} 
+		\label{fig:validmodel5}
+		%\end{flushleft}
+\end{figure}
+
+
+	
+
+
+\begin{table}[h]
+\caption{Recognition accuracy case \textbf{out-3}, activity 67}
+\label{table2}
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|}
+\hline
+$m$ (mvt) & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & \textbf{9}\\
+\hline
+$\phi_{mk}$ (\%) & 7.1 &    11.4 &    \textbf{30.1} &    12.8 &     10.3 &    0 &     0.2 &   0.3 &     27.8\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Tab. \ref{table3} summarizes all the results obtained in case out-3 where $21$ were considered. Only one "false detection" appears in this table (activity 67), which leads to an overall score of $20$ "right detections" out of $21$ possible, \textit{i.e.} $\rho=95.24\%$. \textcolor{red}{Concerning the bad identification obtained for activity 67, there is not really precise reason which explains the confusion between movements 3 and 9 since they are very different. That said, the scores obtained for movement 9 (activities 66 to 68) are relatively low (less than $30\%$). For these activities, it means that several movements can obtain a similar score, the movement selected by the algorithm being the one corresponding to the highest score, even it is is barely higher than the second.}
+\begin{table}[h]
+\caption{Summary of results - case \textbf{out-3}}
+\label{table3}
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|}
+\hline
+Activity & actual/detected movements & $\bar{\phi}$\\
+\hline
+\hline
+48&   1 /  1  & 51.6661\\
+\hline
+   49  &  1  /  1 &  45.8590\\
+   \hline
+   50  &  1 /   1  & 46.6734\\
+   \hline
+   51 &   2 /   2 &  28.9389\\
+   \hline
+   52  &  2  /  2  & 47.4374\\
+   \hline
+   53  &  3 /   3  & 46.0748\\
+   \hline
+   54 &   3 /   3 &  49.6033\\
+   \hline
+   55  &  4  /  4 &  30.2201\\
+   \hline
+   56 &   4  /  4  & 39.8524\\
+   \hline
+   57  &  5  /  5  & 31.0113\\
+   \hline
+   58  &  5  /  5  & 68.4080\\
+   \hline
+   59  &  6  /  6  & 31.8841\\
+   \hline
+   60  &  6 /   6 &  32.0132\\
+   \hline
+   61   & 7  /  7  & 28.1289\\
+   \hline
+   62  &  7  /  7 &  33.8440\\
+   \hline
+   63  &  8  /  8  & 29.0401\\
+   \hline
+   64 &   8 /   8 &  27.8872\\
+   \hline
+   65  &  8  /  8 &  29.1144\\
+   \hline
+   66  &  9 /   9  & 28.4524\\
+   \hline
+   \textbf{67}  &  \textbf{9  /  3 } &  \textbf{27.8292}\\
+   \hline
+   68  &  9 /   9  & 28.2153\\
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Table 4 shows the overall scores obtained in the $10$ cases: \textbf{out}-1 to \textbf{out}-10. The global accurary involved by our approach is $97.25\%$.
+
+\begin{table}[h]
+\caption{Recognition accuracy comparison}
+\label{table4}
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
+\hline
+case \textbf{out-} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\
+\hline
+$\rho$ & 1 &   1 &  0.95 &    1 &     1 &    0.77 &     1 &   1 &   1 & 1\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\textcolor{red}{Many techniques for action recognition have been proposed recently. They are effective and regularly compared to each other in the literature \cite{tra13,xia12}. These comparisons are possible thanks to several benchmark datasets, such as MSR-Action3D dataset \cite{liw10}, UTKinect dataset \cite{xia12} or Florence dataset \cite{sei13}, for example. In this work, only the Florence dataset is used and} the proposed approach is compared to four other approaches in the literature presented in \cite{wan16}. This comparaison is reported in Table \ref{table_example}.
+
+\begin{table}[h]
+\caption{Recognition accuracy comparison}
+\label{table_example}
+\begin{center}
+\begin{tabular}{|c||c|}
+\hline
+Method & Accuracy (\%)\\
+\hline
+\hline
+Seidenari et al.2013\cite{sei13}  & 82.15\\
+\hline
+\hline
+Vemulapalli et al.2014 \cite{vem14} & 90.88\\
+\hline
+Devanne et al.2015 \cite{dev15} & 87.04\\
+\hline
+Wang et al.2015 \cite{wan16} & 94.25\\
+\hline
+\textbf{Our approach}  & \textbf{97.25}\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\subsection{Results analysis}
+
+\textcolor{red}{The results presented in this section highlight the qualities of our algorithm for the detection of movements from the database of the University of Florence. However, these results should be put into perspective by listing certain aspects that could possibly put this algorithm at fault:}
+
+\begin{enumerate}
+\item \textcolor{red}{\textbf{sequence of movements}: The scenarios of this test are very specific, in the sense that only one movement per scenario is considered. In the case of scenarios considering several movements in the same activity, it would also be advisable to dissociate the different movements before applying the proposed algorithm.}
+\item \textcolor{red}{\textbf{variety of population}: the movements of this study were carried out by actors of different sex but all relatively young. Also, our technique could show certain limitations in the case of movements made by very young subjects (children) or the elderly.}
+\item \textcolor{red}{\textbf{measurement disturbances}: As mentioned above, several hardware points such as measurement noise, sensor sensitivity, camera accuracy (...) can alter the data. Developing robust state models could potentially solve this problem.}
+\end{enumerate}
+
+\section{CONCLUSIONS}
+
+This work is part of a research project whose objective is to develop motion detection algorithms. Even if the \textbf{e-moove} project is more particularly dedicated to pathologies related to Parkinson's disease, the algorithm proposed in this paper is general and can be applied to any type of movement: sport, medical education, orthopedics... The proposed approach seems to be original for this type of detection problem. It considers a discret-time state modeling valid over a short "time window", but sliding over the whole experiment period : sliding window principle. The movement to be detected is modeled by a convex formulation of the state models obtained from the dataset, leading to an similarity index of the actual movement with the learning models.\\
+A numerical illustration, considering the Florence 3D dataset, offers a comparison of the present approach with other techniques from the literature. This comparaison shows the effectiveness of this approach, which improves the action recognition accuracy.
+
+\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{thebibliography}{99}
+
+\bibitem{nev16} N. Neverova, Deep Learning for Human Motion Analysis, Artificial Intelligence [cs.AI], Universit\'e de Lyon, 2016.
+\bibitem{li18} M. H. Li, T. A. Mestre and S. H. Fox and B. Taati, Vision-Based Assessment of Parkinsonism and Levodopa-Induced Dyskinesia with Deep Learning Pose Estimation, Journal of NeuroEngineering and Rehabilitation, 2018.
+\bibitem{ber15} S. Berlemont, G. Lefebvre, S. Duffner and C. Garcia, Siamese Neural Network based Similarity Metric for Inertial Gesture Classification and Rejection, International Conference on Automatic Face and Gesture Recognition, May 2015.
+\bibitem{dev14} M. Devanne, H. Wannous, S. Berretti, P. Pala,  M. Daoudi and A. del Bimbo, Reconnaissance d'actions humaines 3D par l'analyse de forme des trajectoire de mouvement, Compression et Repr\'esentation des Signaux Audiovisuels (CORESA), Reims, France, Nov 2014.
+\bibitem{kei03} N. Keijsers, M. Horstink and S. Gielen, Automatic Assessment of Levodopa-Induced Dyskinesia in Daily Life by Neural Networks, Movement Disorder, pp. 70-80, 2003.
+\bibitem{ber89} J. Bernussou, J. C. Geromel, and P. L. D. Peres, A linear programming oriented procedure for quadratic stabilization of uncertain systems, Systems and Control Letters, vol(13), pp 65-72, 1989.
+\bibitem{sze14} C. Szegedy, W. Liu, Y. Ji , P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke and A. Rabinovich, Going Deeper with Convolution, 2014.
+\bibitem{kop19} O. Kopuklu, A. Gunduz, N. Kose and G. Rigoll, Real-time Hand Gesture Detection and Classification Using Convolutional Neural Networks, 2019.
+\bibitem{sei13} L. Seidenari, V. Varano, S. Berretti, A. Del Bimbo and P. Pala, Recognizing Actions from Depth Cameras as Weakly Aligned Multi-PartBag-of-Poses, IEEE Conference on Computer Vision and Pattern Recognition Workshops, Portland, Oregon, 2013.
+\bibitem{bia12} W. Bian, D. Tao, and Y. Rui, Cross-domain human action recognition, In CVPR, IEEE Trans. on Systems, Man, and Cybernetics, Part B: Cybernetics, vol. 42, no. 2, pp. 298–307, Apr. 2012.
+\bibitem{liu13} L. Liu, L. Shao, X. Zhen, and X. Li, Learning discriminative key poses for action recognition, IEEE Trans. on Cybernetics, vol. 43, no. 6, pp. 1860–1870, Dec 2013.
+\bibitem{tra13} Q. D. Tran, and N. Ly, Sparse spatio-temporal
+representation of joint shape-motion cues for human action
+recognition in depth sequences, In IEEE Computing and Communication Technologies, Research, Innovation, and Vision for
+the Future (RIVF), pp. 253–258, 2013.
+\bibitem{xia12} L. Xia, C.-C. Chen, and J. Aggarwal, View invariant
+human action recognition using histograms of 3d joints, in IEEE CVPR, pp. 20-27, 2012.
+\bibitem{liw10} W. Li, Z. Zhang, and Z. Liu, Action recognition
+based on a bag of 3d points, in IEEE Conference on CVPRW, pp. 9-14, 2010.
+
+
+Li, W.; Zhang, Z.; and Liu, Z. 2010. Action recognition
+based on a bag of 3d points. In (CVPRW), 2010 IEEE Conference
+on, 9–14. IEEE.
+\bibitem{vem14} R.Vemulapalli, F. Arrate  and R. Chellappa, Human action recognition by representing 3d skeletons as points in a lie group, In CVPR, IEEE Conference on, 588-595. IEEE, 2014.
+\bibitem{dev15} M. Devanne, H. Wannous, S. Berretti, P. Pala, M. Daoudi  and A. Del Bimbo, 3-d human action recognition by shape analysis of motion trajectories on riemannian manifold, Cybernetics, IEEE Transactions on 45(7):1340-1352, 2015.
+\bibitem{wan16} C. Wang, J. Flynn, Y. Wang, and A. L. Yuille, Recognizing Actions in 3D Using Action-Snippets and Activated Simplices, Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence, Phoenix, Arizona USA, 2016.
+
+%
+%\bibitem{c1} G. O. Young, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15Ð64.
+%\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123Ð135.
+%\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
+%\bibitem{c4} B. Smith, ÒAn approach to graphs of linear forms (Unpublished work style),Ó unpublished.
+%\bibitem{c5} E. H. Miller, ÒA note on reflector arrays (Periodical styleÑAccepted for publication),Ó IEEE Trans. Antennas Propagat., to be publised.
+%\bibitem{c6} J. Wang, ÒFundamentals of erbium-doped fiber amplifiers arrays (Periodical styleÑSubmitted for publication),Ó IEEE J. Quantum Electron., submitted for publication.
+%\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
+%\bibitem{c8} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ÒElectron spectroscopy studies on magneto-optical media and plastic substrate interfaces(Translation Journals style),Ó IEEE Transl. J. Magn.Jpn., vol. 2, Aug. 1987, pp. 740Ð741 [Dig. 9th Annu. Conf. Magnetics Japan, 1982, p. 301].
+%\bibitem{c9} M. Young, The Techincal Writers Handbook.  Mill Valley, CA: University Science, 1989.
+%\bibitem{c10} J. U. Duncombe, ÒInfrared navigationÑPart I: An assessment of feasibility (Periodical style),Ó IEEE Trans. Electron Devices, vol. ED-11, pp. 34Ð39, Jan. 1959.
+%\bibitem{c11} S. Chen, B. Mulgrew, and P. M. Grant, ÒA clustering technique for digital communications channel equalization using radial basis function networks,Ó IEEE Trans. Neural Networks, vol. 4, pp. 570Ð578, July 1993.
+%\bibitem{c12} R. W. Lucky, ÒAutomatic equalization for digital communication,Ó Bell Syst. Tech. J., vol. 44, no. 4, pp. 547Ð588, Apr. 1965.
+%\bibitem{c13} S. P. Bingulac, ÒOn the compatibility of adaptive controllers (Published Conference Proceedings style),Ó in Proc. 4th Annu. Allerton Conf. Circuits and Systems Theory, New York, 1994, pp. 8Ð16.
+%\bibitem{c14} G. R. Faulhaber, ÒDesign of service systems with priority reservation,Ó in Conf. Rec. 1995 IEEE Int. Conf. Communications, pp. 3Ð8.
+%\bibitem{c15} W. D. Doyle, ÒMagnetization reversal in films with biaxial anisotropy,Ó in 1987 Proc. INTERMAG Conf., pp. 2.2-1Ð2.2-6.
+%\bibitem{c16} G. W. Juette and L. E. Zeffanella, ÒRadio noise currents n short sections on bundle conductors (Presented Conference Paper style),Ó presented at the IEEE Summer power Meeting, Dallas, TX, June 22Ð27, 1990, Paper 90 SM 690-0 PWRS.
+%\bibitem{c17} J. G. Kreifeldt, ÒAn analysis of surface-detected EMG as an amplitude-modulated noise,Ó presented at the 1989 Int. Conf. Medicine and Biological Engineering, Chicago, IL.
+%\bibitem{c18} J. Williams, ÒNarrow-band analyzer (Thesis or Dissertation style),Ó Ph.D. dissertation, Dept. Elect. Eng., Harvard Univ., Cambridge, MA, 1993. 
+%\bibitem{c19} N. Kawasaki, ÒParametric study of thermal and chemical nonequilibrium nozzle flow,Ó M.S. thesis, Dept. Electron. Eng., Osaka Univ., Osaka, Japan, 1993.
+%\bibitem{c20} J. P. Wilkinson, ÒNonlinear resonant circuit devices (Patent style),Ó U.S. Patent 3 624 12, July 16, 1990. 
+
+
+
+
+
+
+\end{thebibliography}
+
+
+
+
+\end{document}

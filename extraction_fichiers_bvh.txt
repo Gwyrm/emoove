@@ -1,0 +1,34 @@
+from bvhpython.bvh import Bvh
+
+import pandas as pd
+import os
+import numpy as np
+
+class bvh_to_csv:
+    
+    def _bvh_files(self,path):
+        # lors du parcours d'un dossier
+        # on recupere que les fichiers avec l'extension .bvh
+        # pour pouvoir parcourir ensuite tous les fichiers à extraire
+        file_list = os.listdir(path)
+        for f in os.listdir(path):
+            path_f = path + f
+            fileName, fileExtension = os.path.splitext(path_f)
+            if fileExtension != '.bvh':
+                file_list.remove(f)
+
+        return file_list
+    
+    def extract_file(self,path,file,path_to_save):
+        # extraction d'un fichier bvh
+        with open(path + '/'+ file) as m:
+            bvh_file = Bvh(m.read()).frames
+            mvt = np.array(bvh_file, dtype="float").T
+            df = pd.DataFrame(mvt)
+            df.to_csv(path_to_save+'/'+file+".csv")
+            
+    def extract_folder(self,path_folder,path_to_save):
+        # extraction des fichiers bvh dans un dossier
+        list_bvh_file = self._bvh_files(path_folder)
+        for f in list_bvh_file:
+            self.extract_file(path_folder,f,path_to_save)
