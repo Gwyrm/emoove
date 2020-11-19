@@ -12,7 +12,7 @@
   <param key="Pitch">0</param>
   <param key="Roll">0</param>
   <param key="SmoothEnable">0</param>
-  <param key="Yaw">0</param>
+  <param key="Yaw">0.2</param>
   <param key="acmm">0.8</param>
   <param key="constrain">1</param>
   <param key="constrainHands">0</param>
