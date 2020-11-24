@@ -1,0 +1,11 @@
+\babel@toc {french}{}
+\contentsline {section}{\numberline {1}Introduction}{3}%
+\contentsline {section}{\numberline {2}Le dispositif de capteurs}{3}%
+\contentsline {subsection}{\numberline {2.1}Perception Neuron Pro}{3}%
+\contentsline {subsection}{\numberline {2.2}Axis Neuron Pro}{4}%
+\contentsline {section}{\numberline {3}\acrlong {updrs}}{5}%
+\contentsline {section}{\numberline {4}Enregistrement des données}{7}%
+\contentsline {section}{\numberline {5}Procédure pour la réalisation de l'évaluation motrice au CHU d'Amiens}{7}%
+\contentsline {section}{\numberline {6}Description du protocole expérimentale}{8}%
+\contentsline {section}{Glossaire}{9}%
+\contentsline {section}{Acronymes}{9}%
