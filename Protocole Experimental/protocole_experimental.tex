@@ -50,7 +50,7 @@ Le projet \textbf{E-mOove} est né d'une collaboration entre le laboratoire de M
 
 C'est pourquoi nous utilisons un dispositif de \acrshort{mocap} autorisant la récupération des données du patient après utilisation. Nous avons donc sélectionné la combinaison Perception Neuron Pro qui est composée de 17 capteurs sans fil permettant ainsi une installation simple. Ce dispositif peut donc être utilisée dans un milieu plus serein et moins stressant pour le patient (à son domicile). Les mouvements ainsi diversifiés et plus nombreux accorderont aux médecins plus d'aisance dans l'ajustement du traitement.
 
-Ces données représentant la personne sous la forme d'un squelette en 3D (figure \ref{pnp}) seront exportées grâce au logiciel Axis Neuron Pro dédié à cette combinaison au format \acrshort{bvh}. Ainsi, nous disposons es données de positions et de rotations en 3 dimensions pour chacun des 17 capteurs de la combinaison. Ces données sont traitées grâce à des algorithmes qui exposeront les mouvements caractéristiques enregistrés.
+Ces données représentant la personne sous la forme d'un squelette en 3D (figure \ref{pnp}) seront exportées grâce au logiciel Axis Neuron Pro dédié à cette combinaison. Ainsi, nous disposons des données de positions et de rotations en 3 dimensions pour chacun des 17 capteurs de la combinaison. Ces données sont traitées grâce à des algorithmes qui exposeront les mouvements caractéristiques enregistrés.
 
 \section{Le dispositif de capteurs}
 
@@ -78,7 +78,7 @@ Le logiciel Axis Neuron Pro (figure \ref{a_n_p}) retranscrit directement les mou
 	\label{z_anp}
 \end{figure}
 
-Quelques pré-requis sur le logiciel sont nécessaire avant utilisation de la combinaison. Tout d'abord, les capteurs peuvent être calibrés dans leur boite (Tool $\longrightarrow$ Calibrate sensors). Cette étape n'est pas obligatoire mais doit être réalisée épisodiquement. Ensuite, 5 étapes admettent l'utilisation de la combinaison (figure \ref{z_anp}) :
+Quelques pré-requis sur le logiciel sont nécessaire avant utilisation de la combinaison. Tout d'abord, les capteurs peuvent être calibrés dans leur boite (Tool $\longrightarrow$ Calibrate sensors). Cette étape n'est pas obligatoire mais doit être réalisée épisodiquement. Ensuite, 6 étapes essentielles admettent l'utilisation de la combinaison (figure \ref{z_anp}) :
 \begin{enumerate}
 	\item Connexion des capteurs au logiciel
 	\item Sélection du sexe et de la taille de l'utilisateur : cela permet de savoir, approximativement, les dimensions de chaque membre du corps.
@@ -123,17 +123,25 @@ Cette échelle sert de mesure pour quantifier la progression de la maladie de Pa
 	\item Bradykinésie corporelle et hypokinésie
 \end{enumerate}
 
+Ces items sont évalué par la procédure d'évaluation motrice du CHU (section \ref{proc_chu}), laquelle nous a permis de créer ce protocole expérimental.
+
 \section{Enregistrement des données}
 \label{nommage_data}
 
-Afin de pouvoir sauvegarder toutes les données de toutes provenance, nous avons mis en place un système de nommage des fichiers. La création de la base de données est réalisée en deux phase (section \ref{protocole})., ce qui implique la séparation des données d'entraînement et de test dans deux dossiers. Plusieurs facteurs sont pris en compte :
+Afin de pouvoir sauvegarder toutes les données de toutes provenance, nous avons mis en place un système de nommage des fichiers. La création de la base de données est réalisée en deux phase (section \ref{protocole}), ce qui implique la séparation des données d'entraînement et de test dans deux dossiers. Lors de la phase 1, tous les mouvements sont réalisés et enregistré séparément selon la méthode suivante :
 \begin{enumerate}
 	\item L'enregistreur (initial)
-	\item L'utilisateur (01 pour valeur initiale)
-	\item Essai (01 pour valeur initiale)
-	\item Le numéro du mouvement exécuté (phase 1) / numéro de l'essai (phase 2) (01 pour valeur initiale) 
+	\item Date et heure du premier enregistrement de l'utilisateur (chaque utilisateur est représenté par un numéro unique)
+	\item Le numéro du mouvement exécuté (01 pour valeur initiale) 
 \end{enumerate}
 Ces items sont ensuite joins les uns aux autres par un under-score dans l'ordre affiché.
+
+Ensuite, lors de la phase 2, 5 mouvements choisis aléatoirement sont exécutés dans l'ordre d'une séquence donnée (certains mouvements peuvent être réalisés en même temps). Nous avons choisis la méthode suivant pour les nommer :
+\begin{enumerate}
+	\item L'enregistreur
+	\item Date et heure de l'enregistrement
+	\item Numéro de la séquence
+\end{enumerate}
 
 \section{Procédure pour la réalisation de l'évaluation motrice au CHU d'Amiens}
 \label{proc_chu}
@@ -167,7 +175,9 @@ La procédure exécutée au CHU d'Amiens se comporte différemment de la notre. 
 
 Cette procédure considère deux étapes. Tout d'abord, chaque mouvement est réalisé puis enregistré dans l'ordre comme inscrit dans la procédure expliquée dans la section \ref{nommage_data}. Ces données labellisées permettrons l'entraînement des algorithmes.
 
-Ensuite, 5 mouvements choisis aléatoirement sont effectués dans un ordre aléatoire, certains de ces mouvements peuvent être réalisés en parallèle. Cet enchaînement de mouvements sera précédé d'une marche sur une longueur de 2 mètres afin de pouvoir vérifier si les capteurs sont bien calibrés et avoir un point de référence.
+Ensuite, les 5 mouvements de la séquence sélectionnée sont effectués dans l'ordre de la séquence, certains de ces mouvements peuvent être réalisés en parallèle. Cet enchaînement de mouvements sera précédé d'une marche sur une longueur de 2 mètres afin de pouvoir vérifier si les capteurs sont bien calibrés et avoir un point de référence.
+
+Les séquences sont créé de manière aléatoire et numéroté dans l'ordre de création. Un classeur associe chacune des séquences à son numéro.
 
 \begin{enumerate}
 	\item Marcher (10 pas)
@@ -183,7 +193,6 @@ Ensuite, 5 mouvements choisis aléatoirement sont effectués dans un ordre aléa
 	\item Pas longs (5 fois)
 	\item Équilibre sur un pied puis l'autre
 	\item Reculer en marchant (10 pas)
-	\item Monter / Descendre des escaliers
 	\item Boire
 	\item Lancer une balle
 	\item Tremblement
@@ -191,7 +200,7 @@ Ensuite, 5 mouvements choisis aléatoirement sont effectués dans un ordre aléa
 	\item Regarder à gauche puis à droite
 	\item Acquiescer
 	\item Nier
-	\item Test d'équilibre du Parkinson
+	\item \Gls{pull_test}
 \end{enumerate}
 
 La combinaison utilisée actuellement ne concède pas  d'obtenir les données des phalanges mais le dispositif Perception Neuron Studio le permet. D'autres mouvements contenus dans la procédure du CHU pourront être ajoutés afin de compléter la base de données :

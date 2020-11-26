@@ -7,5 +7,5 @@
 \contentsline {section}{\numberline {4}Enregistrement des données}{7}%
 \contentsline {section}{\numberline {5}Procédure pour la réalisation de l'évaluation motrice au CHU d'Amiens}{7}%
 \contentsline {section}{\numberline {6}Description du protocole expérimentale}{8}%
-\contentsline {section}{Glossaire}{9}%
-\contentsline {section}{Acronymes}{9}%
+\contentsline {section}{Glossaire}{10}%
+\contentsline {section}{Acronymes}{10}%
